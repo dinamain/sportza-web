@@ -1,4 +1,5 @@
 import { mockGroups } from "../data/mockData";
+import { Link } from "react-router-dom";
 
 function GroupCard({ group }) {
   return (
@@ -42,7 +43,18 @@ function GroupCard({ group }) {
 export default function Groups() {
   return (
     <div className="min-h-screen bg-black p-4">
-      <h2 className="text-white text-xl font-bold mb-4">Groups</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-white text-xl font-bold">Groups</h2>
+        <div className="flex gap-2">
+          <Link to="/groups/create" className="bg-yellow-400 text-black text-sm font-bold px-3 py-1.5 rounded-full">
+                + Create
+        </Link>
+          <Link to="/groups/join" className="border border-yellow-400 text-yellow-400 text-sm font-bold px-3 py-1.5 rounded-full">
+  🔑 Join Group
+</Link>
+        </div>
+      </div>
+
       {mockGroups.length === 0 ? (
         <p className="text-gray-500 text-center mt-10">
           No groups yet — create or join one to get started.

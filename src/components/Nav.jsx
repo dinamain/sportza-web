@@ -13,6 +13,8 @@ export default function Nav() {
       <Link to="/login" style={{ color: "#FFD700", textDecoration: "none" }}>Login</Link>
       <Link to="/register" style={{ color: "#FFD700", textDecoration: "none" }}>Register</Link>
       <Link to="/groups" style={{ color: "#FFD700", textDecoration: "none" }}>Groups</Link>
+      <Link to="/profile" style={{ color: "#FFD700", textDecoration: "none" }}>Profile</Link>
+      <Link to="/events" style={{ color: "#FFD700", textDecoration: "none" }}>Events</Link>
     </nav>
   );
 }
