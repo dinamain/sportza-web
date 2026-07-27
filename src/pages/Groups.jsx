@@ -60,7 +60,11 @@ export default function Groups() {
           No groups yet — create or join one to get started.
         </p>
       ) : (
-        mockGroups.map((group) => <GroupCard key={group.id} group={group} />)
+        mockGroups.map((group) => (
+  <Link to={`/groups/${group.id}`} key={group.id}>
+    <GroupCard group={group} />
+  </Link>
+))
       )}
     </div>
   );

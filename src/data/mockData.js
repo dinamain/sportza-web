@@ -74,3 +74,16 @@ export const mockGroupPosts = [
   },
 ];
 export const mockGroupPolls = [];
+
+export const mockGroupPayments = [
+  {
+    id: 1,
+    title: "Kit",
+    category: "Club Fee",
+    frequency: "One Time",
+    amount: 1,
+    collected: 1,
+    dueDate: "21 Jul 2026",
+    status: "Paid",
+  },
+];
