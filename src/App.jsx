@@ -34,6 +34,13 @@ import GroupStore from "./pages/GroupStore";
 import GroupAttendance from "./pages/GroupAttendance";
 import GroupPaymentStats from "./pages/GroupPaymentStats";
 import GroupMatchInvitations from "./pages/GroupMatchInvitations";
+import AddChild from "./pages/AddChild";
+import NotificationPreferences from "./pages/NotificationPreferences";
+import PrivacySecurity from "./pages/PrivacySecurity";
+import LanguageSettings from "./pages/LanguageSettings";
+import HelpFAQ from "./pages/HelpFAQ";
+import ContactSupport from "./pages/ContactSupport";
+import TermsPrivacy from "./pages/TermsPrivacy";
 
 function App() {
   return (
@@ -63,7 +70,7 @@ function App() {
         <Route path="/groups/:id/more" element={<GroupMore />} />
         <Route path="/groups/:id/edit/name" element={<EditGroupName />} />
         <Route path="/groups/:id/edit/description" element={<EditGroupDescription />} />
-<Route path="/groups/:id/edit/sport" element={<EditGroupSport />} />
+        <Route path="/groups/:id/edit/sport" element={<EditGroupSport />} />
         <Route path="/groups/:id/edit/group-type" element={<EditGroupType />} />
         <Route path="/groups/:id/edit/age-category" element={<EditGroupAgeCategory />} />
         <Route path="/groups/:id/edit/group-code" element={<GroupCode />} />
@@ -74,6 +81,13 @@ function App() {
         <Route path="/groups/:id/attendance" element={<GroupAttendance />} />
         <Route path="/groups/:id/payment-stats" element={<GroupPaymentStats />} />
         <Route path="/groups/:id/match-invitations" element={<GroupMatchInvitations />} />
+        <Route path="/profile/children/add" element={<AddChild />} />
+        <Route path="/profile/notifications" element={<NotificationPreferences />} />
+        <Route path="/profile/privacy" element={<PrivacySecurity />} />
+        <Route path="/profile/language" element={<LanguageSettings />} />
+        <Route path="/profile/help" element={<HelpFAQ />} />
+        <Route path="/profile/support" element={<ContactSupport />} />
+        <Route path="/profile/terms" element={<TermsPrivacy />} />
       </Routes>
     </BrowserRouter>
   );
