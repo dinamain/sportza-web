@@ -43,7 +43,7 @@ import HelpFAQ from "./pages/HelpFAQ";
 import ContactSupport from "./pages/ContactSupport";
 import TermsPrivacy from "./pages/TermsPrivacy";
 
-const NO_NAV_ROUTES = ["/login", "/register", "/forgot-password"];
+const NO_NAV_ROUTES = ["/", "/login", "/register", "/forgot-password"];
 
 function AppRoutes() {
   const location = useLocation();
