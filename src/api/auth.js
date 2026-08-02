@@ -22,6 +22,23 @@ export async function registerUser({ email, password, displayName, phone }) {
   return res.json();
 }
 
+export async function requestPasswordReset({ email }) {
+  const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(
+      errorData.detail || errorData.title || errorData.message || "Something went wrong. Please try again."
+    );
+  }
+
+  return res.json().catch(() => ({}));
+}
+
 export async function loginUser({ email, password }) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",

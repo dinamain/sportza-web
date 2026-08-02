@@ -3,6 +3,7 @@ import Nav from "./components/Nav";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 import Groups from "./pages/Groups";
 import CreateGroup from "./pages/CreateGroup";
 import JoinGroup from "./pages/JoinGroup";
@@ -42,7 +43,7 @@ import HelpFAQ from "./pages/HelpFAQ";
 import ContactSupport from "./pages/ContactSupport";
 import TermsPrivacy from "./pages/TermsPrivacy";
 
-const NO_NAV_ROUTES = ["/login", "/register"];
+const NO_NAV_ROUTES = ["/login", "/register", "/forgot-password"];
 
 function AppRoutes() {
   const location = useLocation();
@@ -55,6 +56,7 @@ function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/groups" element={<Groups />} />
         <Route path="/groups/create" element={<CreateGroup />} />
         <Route path="/groups/join" element={<JoinGroup />} />
