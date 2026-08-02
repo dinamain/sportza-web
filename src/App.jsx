@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Nav from "./components/Nav";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -42,10 +42,15 @@ import HelpFAQ from "./pages/HelpFAQ";
 import ContactSupport from "./pages/ContactSupport";
 import TermsPrivacy from "./pages/TermsPrivacy";
 
-function App() {
+const NO_NAV_ROUTES = ["/login", "/register"];
+
+function AppRoutes() {
+  const location = useLocation();
+  const showNav = !NO_NAV_ROUTES.includes(location.pathname);
+
   return (
-    <BrowserRouter>
-      <Nav />
+    <>
+      {showNav && <Nav />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -89,6 +94,14 @@ function App() {
         <Route path="/profile/support" element={<ContactSupport />} />
         <Route path="/profile/terms" element={<TermsPrivacy />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
