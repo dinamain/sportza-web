@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { mockProfile } from "../data/mockData";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -12,6 +11,8 @@ import {
   LogOut,
   Trash2,
 } from "lucide-react";
+
+const BASE_URL = "https://user.sportza.club";
 
 function DeleteAccountModal({ onCancel, onConfirm }) {
   const [confirmText, setConfirmText] = useState("");
@@ -88,48 +89,86 @@ function Toggle({ checked, onChange }) {
 
 export default function Profile() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("authToken");
+
+    if (!userId || !token) {
+      navigate("/login");
+      return;
+    }
+
+    fetch(`${BASE_URL}/users/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load profile");
+        return res.json();
+      })
+      .then((data) => setProfile(data))
+      .catch(() => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+        navigate("/login");
+      })
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
   function handleConfirmSignOut() {
-    // TODO: clear auth token / session once real auth is wired up.
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userId");
     setShowSignOutModal(false);
     navigate("/login");
   }
 
   function handleConfirmDelete() {
-    // TODO: replace with real DELETE /users/{id} call once confirmed
-    // against the Users Swagger doc, then clear auth token.
+    // TODO: replace with real DELETE /users/{id} call — endpoint is
+    // confirmed to exist per Scalar docs, just needs to be wired here.
     setShowDeleteModal(false);
     navigate("/login");
   }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-neutral-500">
+        Loading profile...
+      </div>
+    );
+  }
+
+  if (!profile) return null;
 
   return (
     <div className="min-h-screen bg-black p-4 text-white">
       <div className="max-w-md mx-auto pb-10">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 rounded-full bg-neutral-800 flex items-center justify-center text-yellow-400 font-bold text-xl">
-            {mockProfile.displayName.split(" ").map((n) => n[0]).join("")}
+            {profile.displayName?.split(" ").map((n) => n[0]).join("") || "?"}
           </div>
           <div>
-            <div className="font-bold text-lg">{mockProfile.displayName}</div>
-            <div className="text-gray-400 text-sm">{mockProfile.email}</div>
-            <div className="text-gray-400 text-sm">{mockProfile.phone}</div>
+            <div className="font-bold text-lg">{profile.displayName}</div>
+            <div className="text-gray-400 text-sm">{profile.email}</div>
+            <div className="text-gray-400 text-sm">{profile.phone}</div>
           </div>
         </div>
 
         <div className="flex justify-around bg-neutral-900 rounded-xl p-4 mb-6">
           <div className="text-center">
-            <div className="font-bold text-yellow-400">{mockProfile.groups}</div>
+            <div className="font-bold text-yellow-400">{profile.groups ?? 0}</div>
             <div className="text-xs text-gray-400">Groups</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-yellow-400">{mockProfile.children}</div>
+            <div className="font-bold text-yellow-400">{profile.children ?? 0}</div>
             <div className="text-xs text-gray-400">Children</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-yellow-400">{mockProfile.events}</div>
+            <div className="font-bold text-yellow-400">{profile.events ?? 0}</div>
             <div className="text-xs text-gray-400">Events</div>
           </div>
         </div>
