@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createChild } from "../api/users";
 
 // Same hardcoded sport list used in EditGroupSport — keep these in
 // sync, or better, move to a shared constants file once you have one.
+// Not sent to the backend: the real CreateChildDto only has
+// name/dateOfBirth, confirmed against the live API.
 const SPORTS = [
   "Football",
   "Cricket",
@@ -22,15 +25,24 @@ export default function AddChild() {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
   const [sport, setSport] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   const canSave = name.trim() && dob;
 
-  function handleSave() {
-    // TODO: replace with real POST /users/{userId}/children call.
-    // Body per Swagger is just { name, dateOfBirth } — sport isn't
-    // confirmed as a real field yet, so send it only if the backend
-    // accepts it; otherwise drop it from the payload.
-    navigate("/profile/children");
+  async function handleSave() {
+    setSaving(true);
+    setError(null);
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("authToken");
+      await createChild({ userId, token, name, dateOfBirth: dob });
+      navigate("/profile/children");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -74,14 +86,20 @@ export default function AddChild() {
           ))}
         </select>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-400 text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <button
           onClick={handleSave}
-          disabled={!canSave}
+          disabled={!canSave || saving}
           className={`w-full rounded-xl py-3 font-semibold ${
-            canSave ? "bg-yellow-400 text-black" : "bg-neutral-800 text-neutral-500"
+            canSave && !saving ? "bg-yellow-400 text-black" : "bg-neutral-800 text-neutral-500"
           }`}
         >
-          Add Child
+          {saving ? "Adding..." : "Add Child"}
         </button>
 
         <p className="text-neutral-500 text-xs text-center mt-4">

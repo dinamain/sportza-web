@@ -39,6 +39,21 @@ export async function requestPasswordReset({ email }) {
   return res.json().catch(() => ({}));
 }
 
+export async function changePassword({ userId, token, currentPassword, newPassword }) {
+  const res = await fetch(`${BASE_URL}/auth/change-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ userId, currentPassword, newPassword }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(
+      errorData.detail || errorData.title || errorData.message || "Failed to change password"
+    );
+  }
+}
+
 export async function loginUser({ email, password }) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",

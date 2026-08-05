@@ -11,10 +11,11 @@ import {
   LogOut,
   Trash2,
 } from "lucide-react";
+import { deleteUser } from "../api/users";
 
 const BASE_URL = "https://user.sportza.club";
 
-function DeleteAccountModal({ onCancel, onConfirm }) {
+function DeleteAccountModal({ onCancel, onConfirm, deleting, error }) {
   const [confirmText, setConfirmText] = useState("");
   const canDelete = confirmText.trim().toUpperCase() === "DELETE";
 
@@ -33,21 +34,23 @@ function DeleteAccountModal({ onCancel, onConfirm }) {
           placeholder='Type "DELETE" to confirm'
           className="w-full bg-black border border-neutral-700 rounded-xl px-4 py-2.5 text-white mb-4"
         />
+        {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 border border-neutral-700 text-neutral-300 rounded-xl py-2.5 font-medium"
+            disabled={deleting}
+            className="flex-1 border border-neutral-700 text-neutral-300 rounded-xl py-2.5 font-medium disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            disabled={!canDelete}
+            disabled={!canDelete || deleting}
             className={`flex-1 rounded-xl py-2.5 font-medium ${
-              canDelete ? "bg-red-500 text-white" : "bg-neutral-800 text-neutral-600"
+              canDelete && !deleting ? "bg-red-500 text-white" : "bg-neutral-800 text-neutral-600"
             }`}
           >
-            Delete
+            {deleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>
@@ -94,6 +97,8 @@ export default function Profile() {
   const [darkMode, setDarkMode] = useState(true);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -127,11 +132,21 @@ export default function Profile() {
     navigate("/login");
   }
 
-  function handleConfirmDelete() {
-    // TODO: replace with real DELETE /users/{id} call — endpoint is
-    // confirmed to exist per Scalar docs, just needs to be wired here.
-    setShowDeleteModal(false);
-    navigate("/login");
+  async function handleConfirmDelete() {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("authToken");
+      await deleteUser({ userId, token });
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userId");
+      navigate("/login");
+    } catch (err) {
+      setDeleteError(err.message);
+    } finally {
+      setDeleting(false);
+    }
   }
 
   if (loading) {
@@ -302,6 +317,8 @@ export default function Profile() {
         <DeleteAccountModal
           onCancel={() => setShowDeleteModal(false)}
           onConfirm={handleConfirmDelete}
+          deleting={deleting}
+          error={deleteError}
         />
       )}
     </div>

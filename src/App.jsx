@@ -38,6 +38,7 @@ import GroupMatchInvitations from "./pages/GroupMatchInvitations";
 import AddChild from "./pages/AddChild";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import PrivacySecurity from "./pages/PrivacySecurity";
+import ChangePassword from "./pages/ChangePassword";
 import LanguageSettings from "./pages/LanguageSettings";
 import HelpFAQ from "./pages/HelpFAQ";
 import ContactSupport from "./pages/ContactSupport";
@@ -91,6 +92,7 @@ function AppRoutes() {
         <Route path="/profile/children/add" element={<AddChild />} />
         <Route path="/profile/notifications" element={<NotificationPreferences />} />
         <Route path="/profile/privacy" element={<PrivacySecurity />} />
+        <Route path="/profile/security/password" element={<ChangePassword />} />
         <Route path="/profile/language" element={<LanguageSettings />} />
         <Route path="/profile/help" element={<HelpFAQ />} />
         <Route path="/profile/support" element={<ContactSupport />} />

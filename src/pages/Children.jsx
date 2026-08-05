@@ -1,9 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getChildren } from "../api/users";
 
 export default function Children() {
-  const [children, setChildren] = useState([]); // empty, matches "No children yet"
   const navigate = useNavigate();
+  const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("authToken");
+
+    if (!userId || !token) {
+      navigate("/login");
+      return;
+    }
+
+    getChildren({ userId, token })
+      .then(setChildren)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-neutral-500">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black p-4 text-white">
@@ -30,9 +55,8 @@ export default function Children() {
         ) : (
           <div className="flex flex-col gap-2">
             {children.map((c) => (
-              <button
+              <div
                 key={c.id}
-                onClick={() => navigate(`/profile/children/${c.id}`)}
                 className="w-full bg-neutral-900 rounded-xl p-4 flex items-center gap-3 text-left border border-neutral-800"
               >
                 <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center font-semibold text-yellow-400">
@@ -40,9 +64,13 @@ export default function Children() {
                 </div>
                 <div>
                   <div className="font-medium">{c.name}</div>
-                  {c.sport && <div className="text-gray-500 text-sm">{c.sport}</div>}
+                  {c.dateOfBirth && (
+                    <div className="text-gray-500 text-sm">
+                      {new Date(c.dateOfBirth).toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         )}
