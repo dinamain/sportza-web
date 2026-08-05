@@ -1,23 +1,91 @@
 import { Link } from "react-router-dom";
-import { mockGroupEvents } from "../data/mockData";
+import { Plus, MoreHorizontal } from "lucide-react";
+import DashboardLayout from "../components/DashboardLayout";
 
-function EventCard({ event }) {
+const STATUS_COLORS = {
+  Attending: "#16A34A",
+  Maybe: "#D97706",
+  Declined: "#6B7280",
+  Pending: "#2563EB",
+};
+
+const EVENTS = [
+  {
+    id: 1,
+    day: "SAT",
+    date: 15,
+    title: "FC Kochi Weekly Practice",
+    group: "FC Kochi",
+    members: 55,
+    time: "07:00 AM - 09:00 AM",
+    location: "Panampilly Ground",
+    status: "Attending",
+  },
+  {
+    id: 2,
+    day: "TUE",
+    date: 18,
+    title: "Midweek Friendly vs Yorkers CC",
+    group: "FC Kochi",
+    members: 55,
+    time: "06:30 PM - 08:30 PM",
+    location: "Deccatline Arena",
+    status: "Maybe",
+  },
+  {
+    id: 3,
+    day: "SUN",
+    date: 23,
+    title: "Rapterz CC Summer Tournament Round 1",
+    group: "Rapterz CC",
+    members: 12,
+    time: "09:00 AM - 01:00 PM",
+    location: "Kaloor Stadium Pitches",
+    status: "Declined",
+  },
+  {
+    id: 4,
+    day: "THU",
+    date: 27,
+    title: "Strategy & Kit Fitting Session",
+    group: "FC Kochi",
+    members: 55,
+    time: "05:00 PM - 07:00 PM",
+    location: "Clubhouse Boardroom",
+    status: "Pending",
+  },
+];
+
+function StatusBadge({ status }) {
+  const color = STATUS_COLORS[status] || "#6B7280";
   return (
-    <div className="bg-neutral-900 rounded-xl p-4 mb-3 flex gap-4">
-      <div className="text-center bg-yellow-900 rounded-lg px-3 py-2 h-fit">
-        <div className="text-xs text-yellow-300">{event.date.split(" ")[0]}</div>
-        <div className="text-xl font-bold text-yellow-300">{event.date.split(" ")[1]}</div>
-        <div className="text-xs text-yellow-300">{event.date.split(" ")[2]}</div>
+    <span
+      className="rounded px-2.5 py-1 text-[13px] font-semibold"
+      style={{ backgroundColor: `${color}1A`, color }}
+    >
+      {status}
+    </span>
+  );
+}
+
+function EventRow({ event }) {
+  return (
+    <div className="flex items-center gap-4 border-b border-[#F3F4F6] p-4 last:border-b-0">
+      <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg bg-[#F16536]/10">
+        <span className="text-[11px] font-bold uppercase text-[#F16536]">{event.day}</span>
+        <span className="text-lg font-bold text-[#1A1A1A]">{event.date}</span>
       </div>
-      <div className="flex-1">
-        <div className="text-xs text-yellow-400">🏆 {event.groupName}</div>
-        <div className="font-bold">{event.title}</div>
-        <div className="text-sm text-gray-400">🕒 {event.time}</div>
-        <div className="flex gap-3 mt-2 text-sm">
-          <span className="text-green-400">✅ {event.rsvp.going}</span>
-          <span className="text-red-400">❌ {event.rsvp.notGoing}</span>
-          <span className="text-yellow-400">❓ {event.rsvp.maybe}</span>
+      <div className="min-w-0 flex-1">
+        <div className="truncate font-semibold text-[#1A1A1A]">{event.title}</div>
+        <div className="truncate text-[13px] text-[#666666]">
+          {event.group} • {event.members} Members • {event.time} • {event.location}
         </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-3">
+        <StatusBadge status={event.status} />
+        <button className="text-[#9CA3AF] hover:text-[#666666]">
+          <MoreHorizontal size={18} />
+        </button>
       </div>
     </div>
   );
@@ -25,24 +93,32 @@ function EventCard({ event }) {
 
 export default function GroupEvents() {
   return (
-    <div className="min-h-screen bg-black p-4 text-white">
-      <div className="max-w-md mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Events</h2>
-          <Link
-  to="/events/create"
-  className="bg-yellow-400 text-black w-8 h-8 rounded-full font-bold flex items-center justify-center"
->
-  +
-</Link>
-        </div>
-
-        {mockGroupEvents.length === 0 ? (
-          <div className="text-center text-gray-500 mt-10">No upcoming events</div>
+    <DashboardLayout
+      title="Events Schedule"
+      headerActions={
+        <Link
+          to="/events/create"
+          className="flex items-center gap-1.5 rounded-full bg-[#F16536] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e0572a]"
+        >
+          <Plus size={14} />
+          Create event
+        </Link>
+      }
+    >
+      <div className="rounded-2xl border border-[#E5E7EB] bg-white p-8">
+        <h2 className="mb-4 text-sm font-semibold text-[#666666]">
+          Upcoming Matches &amp; Practice Sessions
+        </h2>
+        {EVENTS.length === 0 ? (
+          <div className="py-10 text-center text-[#9CA3AF]">No upcoming events</div>
         ) : (
-          mockGroupEvents.map((e) => <EventCard key={e.id} event={e} />)
+          <div className="flex flex-col">
+            {EVENTS.map((event) => (
+              <EventRow key={event.id} event={event} />
+            ))}
+          </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
