@@ -44,7 +44,7 @@ import HelpFAQ from "./pages/HelpFAQ";
 import ContactSupport from "./pages/ContactSupport";
 import TermsPrivacy from "./pages/TermsPrivacy";
 
-const NO_NAV_ROUTES = ["/", "/login", "/register", "/forgot-password", "/groups"];
+const NO_NAV_ROUTES = ["/", "/login", "/register", "/forgot-password", "/groups", "/posts"];
 const NO_NAV_PATTERNS = [/^\/groups\/\d+$/];
 
 function AppRoutes() {
