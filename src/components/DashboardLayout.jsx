@@ -23,7 +23,14 @@ const NAV_ITEMS = [
   { label: "Messages", to: null, icon: MessageSquare },
 ];
 
-export default function DashboardLayout({ title, subtitle, user, children }) {
+export default function DashboardLayout({
+  title,
+  titleBadge,
+  subtitle,
+  headerActions,
+  user,
+  children,
+}) {
   const location = useLocation();
 
   return (
@@ -91,10 +98,13 @@ export default function DashboardLayout({ title, subtitle, user, children }) {
       <main className="flex-1 p-6">
         <div className="mb-4 flex h-14 items-center justify-between">
           <div>
-            <h1 className="text-[22px] font-bold text-[#111827]">{title}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-[22px] font-bold text-[#111827]">{title}</h1>
+              {titleBadge}
+            </div>
             {subtitle && <p className="text-[13px] text-[#6B7280]">{subtitle}</p>}
           </div>
-          <Bell size={20} className="text-[#6B7280]" />
+          {headerActions || <Bell size={20} className="text-[#6B7280]" />}
         </div>
 
         <div className="flex flex-col gap-4">{children}</div>
