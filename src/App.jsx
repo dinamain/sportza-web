@@ -45,10 +45,13 @@ import ContactSupport from "./pages/ContactSupport";
 import TermsPrivacy from "./pages/TermsPrivacy";
 
 const NO_NAV_ROUTES = ["/", "/login", "/register", "/forgot-password", "/groups"];
+const NO_NAV_PATTERNS = [/^\/groups\/\d+$/];
 
 function AppRoutes() {
   const location = useLocation();
-  const showNav = !NO_NAV_ROUTES.includes(location.pathname);
+  const showNav =
+    !NO_NAV_ROUTES.includes(location.pathname) &&
+    !NO_NAV_PATTERNS.some((pattern) => pattern.test(location.pathname));
 
   return (
     <>

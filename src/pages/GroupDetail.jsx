@@ -1,111 +1,227 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { Pencil, Menu } from "lucide-react";
-import { mockGroups, mockGroupEvents, mockGroupPosts, mockGroupPolls, mockGroupPayments } from "../data/mockData";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Settings,
+  AlertTriangle,
+  Users,
+  Trophy,
+  TrendingUp,
+  Clock,
+  ChevronRight,
+  Search,
+} from "lucide-react";
+import DashboardLayout from "../components/DashboardLayout";
 
-export default function GroupDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const group = mockGroups.find((g) => g.id === Number(id));
-  const [tab, setTab] = useState("events");
+const TABS = [
+  { key: "overview", label: "Overview" },
+  { key: "events", label: "Events (3)" },
+  { key: "subgroups", label: "Subgroups (4)" },
+  { key: "members", label: "Members (142)" },
+  { key: "chat", label: "Chat" },
+];
 
-  if (!group) return <div className="text-white p-4">Group not found</div>;
+const STATS = [
+  { label: "Total Members", value: "142", icon: Users, color: "#F16536" },
+  { label: "Matches Played", value: "28", icon: Trophy, color: "#F59E0B" },
+  { label: "Win Rate", value: "72%", icon: TrendingUp, color: "#10B981" },
+  { label: "Pending RSVPs", value: "14", icon: Clock, color: "#EF4444" },
+];
 
-  const tabs = [
-    { key: "events", label: "Events" },
-    { key: "posts", label: "Posts" },
-    { key: "polls", label: "Polls" },
-    { key: "payments", label: "Payments" },
-  ];
+const SUBGROUPS = [
+  { name: "Kochi 7v7 Squad", players: 24 },
+  { name: "Kochi Vet Rookies", players: 18 },
+  { name: "Sunday Pick-Up Squad", players: 42 },
+];
 
+const NOTICES = [
+  {
+    title: "Jersey size orders close tomorrow",
+    body: "Make sure to input your size preferences in the admin Google form link posted on chat before Wednesday noon! No late entries.",
+    author: "John Mathew",
+    time: "4 hours ago",
+  },
+];
+
+const MEMBERS = [
+  { name: "John Mathew", role: "Admin", status: "PAID" },
+  { name: "Sarah Jenkins", role: "Moderator", status: "PAID" },
+  { name: "Anoop Dev", role: "Member", status: "UNPAID" },
+  { name: "Nisha Rao", role: "Member", status: "PAID" },
+  { name: "Kevin Paul", role: "Member", status: "PAID" },
+];
+
+function StatCard({ label, value, icon: Icon, color }) {
   return (
-    <div className="min-h-screen bg-black p-4 text-white">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between">
-          <Link to="/groups" className="text-white text-xl">←</Link>
-          <div className="flex gap-2">
-            <button
-              onClick={() => navigate(`/groups/${id}/edit`)}
-              className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center"
-            >
-              <Pencil size={16} className="text-white" />
-            </button>
-            <button
-              onClick={() => navigate(`/groups/${id}/more`)}
-              className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center"
-            >
-              <Menu size={16} className="text-white" />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center mt-4 mb-4">
-          <div className="w-20 h-20 bg-neutral-800 rounded-2xl flex items-center justify-center text-3xl mb-2">
-            🏐
-          </div>
-          <h2 className="text-xl font-bold">{group.name}</h2>
-          <div className="flex gap-2 mt-2">
-            <span className="bg-yellow-900 text-yellow-300 px-2 py-1 rounded-full text-xs">{group.sport}</span>
-            <span className="bg-neutral-700 px-2 py-1 rounded-full text-xs">{group.groupType}</span>
-            <span className="bg-teal-900 text-teal-300 px-2 py-1 rounded-full text-xs">{group.clubType}</span>
-          </div>
-          <div className="text-gray-400 text-sm mt-1">📍 {group.location}</div>
-        </div>
-
-        <div className="flex justify-around bg-neutral-900 rounded-xl p-4 mb-3">
-          <div className="text-center">
-            <div className="font-bold text-yellow-400">{group.members}</div>
-            <div className="text-xs text-gray-400">Members</div>
-          </div>
-          <div className="text-center">
-            <div className="font-bold text-yellow-400">{group.subGroups}</div>
-            <div className="text-xs text-gray-400">Sub Groups</div>
-          </div>
-          <div className="text-center">
-            <div className="font-bold text-yellow-400">{group.teams}</div>
-            <div className="text-xs text-gray-400">Teams</div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center bg-neutral-900 rounded-xl p-3 mb-4">
-          <span className="text-gray-400 text-sm">🔑 Group Code: <span className="text-yellow-400">{group.groupCode}</span></span>
-        </div>
-
-        <div className="flex border-b border-neutral-800 mb-4">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`flex-1 pb-2 text-sm font-bold ${
-                tab === t.key ? "text-yellow-400 border-b-2 border-yellow-400" : "text-gray-500"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        {tab === "events" && (
-          mockGroupEvents.length === 0
-            ? <div className="text-center text-gray-500 mt-10">No upcoming events</div>
-            : mockGroupEvents.map((e) => <div key={e.id} className="text-white mb-2">{e.title}</div>)
-        )}
-        {tab === "posts" && (
-          mockGroupPosts.length === 0
-            ? <div className="text-center text-gray-500 mt-10">No posts in the last 3 days</div>
-            : mockGroupPosts.map((p) => <div key={p.id} className="text-white mb-2">{p.content}</div>)
-        )}
-        {tab === "polls" && (
-          mockGroupPolls.length === 0
-            ? <div className="text-center text-gray-500 mt-10">No open polls</div>
-            : mockGroupPolls.map((p) => <div key={p.id}>{p.question}</div>)
-        )}
-        {tab === "payments" && (
-          mockGroupPayments.length === 0
-            ? <div className="text-center text-gray-500 mt-10">No overdue payments</div>
-            : mockGroupPayments.map((p) => <div key={p.id} className="text-white mb-2">{p.title} — ₹{p.amount}</div>)
-        )}
+    <div className="flex flex-1 items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4">
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+        style={{ backgroundColor: `${color}1A` }}
+      >
+        <Icon size={18} style={{ color }} />
+      </div>
+      <div>
+        <div className="text-lg font-bold text-[#1A1A1A]">{value}</div>
+        <div className="text-xs text-[#666666]">{label}</div>
       </div>
     </div>
+  );
+}
+
+export default function GroupDetail() {
+  const [tab, setTab] = useState("overview");
+
+  return (
+    <DashboardLayout hideHeader fullBleed>
+      <div className="flex items-center justify-between border-b border-[#E5E5E5] bg-white px-8 py-4">
+        <div className="flex items-center gap-3">
+          <Link to="/groups" className="text-[#666666] hover:text-[#1A1A1A]">
+            <ArrowLeft size={20} />
+          </Link>
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F16536] text-sm font-bold text-white">
+            FC
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-lg font-bold text-[#1A1A1A]">FC Kochi</span>
+              <CheckCircle2 size={16} className="text-[#3B82F6]" />
+            </div>
+            <div className="text-[13px] text-[#666666]">
+              Football • Kochi, Kerala • Est. June 2024
+            </div>
+          </div>
+        </div>
+        <button className="flex items-center gap-1.5 rounded-full border border-[#E5E5E5] px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#FAFAFA]">
+          <Settings size={14} />
+          Admin Panel
+        </button>
+      </div>
+
+      <div className="flex items-center justify-between bg-[#F16536] px-8 py-2.5 text-sm text-white">
+        <div className="flex items-center gap-2">
+          <AlertTriangle size={14} />
+          <span>ADMIN ACTION REQUIRED: 3 court bookings for Sunday require payment verification.</span>
+        </div>
+        <Link to="/payments" className="font-semibold underline">
+          Review Payments
+        </Link>
+      </div>
+
+      <div className="flex gap-8 border-b border-[#E5E5E5] bg-white px-8">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`border-b-2 py-4 text-sm font-medium transition-colors ${
+              tab === t.key
+                ? "border-[#F16536] text-[#F16536]"
+                : "border-transparent text-[#666666] hover:text-[#1A1A1A]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="p-8">
+        {tab === "overview" ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-4">
+              {STATS.map((s) => (
+                <StatCard key={s.label} {...s} />
+              ))}
+            </div>
+
+            <div className="grid grid-cols-[1fr_340px] gap-4">
+              <div className="flex flex-col gap-4">
+                <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="font-bold text-[#1A1A1A]">Active Subgroups</h3>
+                    <button className="text-sm font-medium text-[#F16536] hover:underline">
+                      Create subgroup
+                    </button>
+                  </div>
+                  <div className="flex gap-3">
+                    {SUBGROUPS.map((sg) => (
+                      <div
+                        key={sg.name}
+                        className="flex flex-1 items-center justify-between rounded-lg border border-[#E5E5E5] p-3"
+                      >
+                        <div>
+                          <div className="text-sm font-semibold text-[#1A1A1A]">{sg.name}</div>
+                          <div className="text-xs text-[#666666]">{sg.players} players</div>
+                        </div>
+                        <ChevronRight size={16} className="text-[#9CA3AF]" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+                  <h3 className="mb-3 font-bold text-[#1A1A1A]">Recent Notices</h3>
+                  <div className="flex flex-col gap-3">
+                    {NOTICES.map((n) => (
+                      <div key={n.title} className="rounded-lg border border-[#E5E5E5] p-3">
+                        <div className="text-sm font-semibold text-[#1A1A1A]">{n.title}</div>
+                        <p className="mt-1 text-[13px] text-[#666666]">{n.body}</p>
+                        <div className="mt-2 text-xs text-[#9CA3AF]">
+                          Posted by {n.author} • {n.time}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="font-bold text-[#1A1A1A]">Members Roster</h3>
+                  <span className="text-xs text-[#666666]">142 Total</span>
+                </div>
+                <div className="mb-3 flex items-center gap-2 rounded-lg border border-[#E5E5E5] px-3 py-2">
+                  <Search size={14} className="text-[#9CA3AF]" />
+                  <input
+                    placeholder="Search by name..."
+                    className="w-full text-sm text-[#1A1A1A] outline-none placeholder-[#9CA3AF]"
+                  />
+                </div>
+                <div className="flex flex-col gap-3">
+                  {MEMBERS.map((m) => (
+                    <div key={m.name} className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5F5F5] text-xs font-semibold text-[#666666]">
+                        {m.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium text-[#1A1A1A]">
+                          {m.name}
+                        </div>
+                        <div className="text-xs text-[#666666]">{m.role}</div>
+                      </div>
+                      <span
+                        className="rounded px-2 py-0.5 text-[11px] font-semibold"
+                        style={{
+                          backgroundColor: m.status === "PAID" ? "#D1FAE5" : "#FEE2E2",
+                          color: m.status === "PAID" ? "#059669" : "#DC2626",
+                        }}
+                      >
+                        {m.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-3 w-full text-center text-sm font-medium text-[#F16536] hover:underline">
+                  View complete roster directory
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-[#E5E7EB] bg-white p-12 text-center text-[#666666]">
+            {TABS.find((t) => t.key === tab)?.label} content coming soon.
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 }

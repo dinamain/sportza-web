@@ -28,6 +28,8 @@ export default function DashboardLayout({
   titleBadge,
   subtitle,
   headerActions,
+  hideHeader = false,
+  fullBleed = false,
   user,
   children,
 }) {
@@ -95,19 +97,21 @@ export default function DashboardLayout({
         </Link>
       </aside>
 
-      <main className="flex-1 p-6">
-        <div className="mb-4 flex h-14 items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-[22px] font-bold text-[#111827]">{title}</h1>
-              {titleBadge}
+      <main className={`flex-1 overflow-y-auto ${fullBleed ? "" : "p-6"}`}>
+        {!hideHeader && (
+          <div className="mb-4 flex h-14 items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-[22px] font-bold text-[#111827]">{title}</h1>
+                {titleBadge}
+              </div>
+              {subtitle && <p className="text-[13px] text-[#6B7280]">{subtitle}</p>}
             </div>
-            {subtitle && <p className="text-[13px] text-[#6B7280]">{subtitle}</p>}
+            {headerActions || <Bell size={20} className="text-[#6B7280]" />}
           </div>
-          {headerActions || <Bell size={20} className="text-[#6B7280]" />}
-        </div>
+        )}
 
-        <div className="flex flex-col gap-4">{children}</div>
+        {fullBleed ? children : <div className="flex flex-col gap-4">{children}</div>}
       </main>
     </div>
   );
